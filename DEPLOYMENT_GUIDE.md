@@ -23,24 +23,26 @@ This guide covers how to deploy the entire Foody Platform (4 Frontends, 1 Backen
 
 ---
 
-## 2. Deploy Backend (Render - Free Tier)
+## 2. Deploy Backend (Back4App Containers - Free & No Card Required)
 
-1. Go to [Render](https://render.com/) and connect your GitHub.
-2. Click **New > Web Service**.
+Because most cloud providers now require credit cards for identity verification, we will use **Back4App Containers** which allows you to deploy Dockerized Node.js applications completely free without a card.
+
+1. Go to [Back4App Containers](https://www.back4app.com/containers) and sign up using your GitHub account.
+2. Click **New App**.
 3. Select your Foody GitHub repository.
 4. **Configuration:**
    - **Name**: `foody-backend`
-   - **Root Directory**: `apps/backend` (Important!)
-   - **Environment**: `Node`
-   - **Build Command**: `npm install && npx prisma generate && npm run build`
-   - **Start Command**: `npm run start:prod`
-5. **Environment Variables** (Add these):
+   - **Root Directory**: `apps/backend` (This is crucial, otherwise the deployment will fail!)
+   - **Branch**: `main`
+   - **Auto-Deploy**: Enabled
+5. **Environment Variables** (Add these before deploying):
    - `DATABASE_URL` = (Paste Supabase URI)
    - `REDIS_HOST` = (Paste Upstash Endpoint)
    - `REDIS_PORT` = (Paste Upstash Port)
-   - `JWT_SECRET` = (Any random secret string)
-6. Click **Create Web Service**.
-   - *Once deployed, copy the Render URL (e.g., `https://foody-backend.onrender.com`). You will need this for the frontends.*
+   - `JWT_SECRET` = (Any random secret string, e.g., `supersecretjwtkey123`)
+6. Click **Deploy**.
+
+*Back4App will automatically detect the `Dockerfile` inside `apps/backend` and build your NestJS application. Once deployed, copy the live URL (e.g., `https://foody-backend-xyz.b4a.run`). You will need this for the frontends.*
 
 ---
 
