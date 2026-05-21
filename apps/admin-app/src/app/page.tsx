@@ -1,65 +1,78 @@
-import Image from "next/image";
+"use client";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { DollarSign, Users, Store, Activity } from 'lucide-react';
 
-export default function Home() {
+const data = [
+  { name: 'Week 1', revenue: 40000, users: 2400 },
+  { name: 'Week 2', revenue: 45000, users: 3100 },
+  { name: 'Week 3', revenue: 52000, users: 4800 },
+  { name: 'Week 4', revenue: 68000, users: 6200 },
+];
+
+export default function AdminDashboard() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">Global Overview</h1>
+        <p className="text-muted-foreground">Platform-wide metrics and performance.</p>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="bg-card border rounded-xl p-6 shadow-sm">
+          <div className="flex justify-between items-center mb-4">
+             <h3 className="font-semibold text-sm text-muted-foreground">Total Revenue</h3>
+             <DollarSign className="h-4 w-4 text-green-500" />
+          </div>
+          <p className="text-3xl font-bold">$205,000</p>
+          <p className="text-xs text-green-500 mt-2">↑ +14.5% from last month</p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        
+        <div className="bg-card border rounded-xl p-6 shadow-sm">
+          <div className="flex justify-between items-center mb-4">
+             <h3 className="font-semibold text-sm text-muted-foreground">Active Users</h3>
+             <Users className="h-4 w-4 text-blue-500" />
+          </div>
+          <p className="text-3xl font-bold">16,500</p>
+          <p className="text-xs text-blue-500 mt-2">↑ +8.2% from last month</p>
         </div>
-      </main>
+
+        <div className="bg-card border rounded-xl p-6 shadow-sm">
+          <div className="flex justify-between items-center mb-4">
+             <h3 className="font-semibold text-sm text-muted-foreground">Partner Restaurants</h3>
+             <Store className="h-4 w-4 text-orange-500" />
+          </div>
+          <p className="text-3xl font-bold">245</p>
+          <p className="text-xs text-orange-500 mt-2">12 pending approval</p>
+        </div>
+
+        <div className="bg-card border rounded-xl p-6 shadow-sm">
+          <div className="flex justify-between items-center mb-4">
+             <h3 className="font-semibold text-sm text-muted-foreground">System Health</h3>
+             <Activity className="h-4 w-4 text-red-500" />
+          </div>
+          <p className="text-3xl font-bold">99.9%</p>
+          <p className="text-xs text-muted-foreground mt-2">All systems operational</p>
+        </div>
+      </div>
+
+      <div className="bg-card border rounded-xl p-6 h-[500px] shadow-sm">
+        <h3 className="font-semibold mb-6 text-lg">Growth Trajectory (Last 30 Days)</h3>
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+            <defs>
+              <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
+            <XAxis dataKey="name" stroke="#888" />
+            <YAxis stroke="#888" />
+            <Tooltip contentStyle={{ backgroundColor: '#222', borderColor: '#444' }} />
+            <Area type="monotone" dataKey="revenue" stroke="#10b981" fillOpacity={1} fill="url(#colorRev)" strokeWidth={3} />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

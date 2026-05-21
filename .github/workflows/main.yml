@@ -1,0 +1,50 @@
+name: Foody CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci --legacy-peer-deps
+
+    - name: Generate Prisma Client
+      run: npx prisma generate --schema=apps/backend/prisma/schema.prisma
+
+    - name: Type Check & Lint (Frontend & Backend)
+      run: |
+        npm run lint --if-present
+        
+    - name: Build Monorepo (Turborepo)
+      run: npm run build
+      env:
+        # Turborepo environment variables
+        NEXT_PUBLIC_API_URL: http://localhost:3001/api/v1
+        DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/postgres"
+
+  docker-build:
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Build and verify Docker Compose (Dry Run)
+      run: docker compose build

@@ -1,0 +1,14 @@
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+COPY apps/delivery-app/package*.json ./apps/delivery-app/
+RUN npm install
+COPY . .
+RUN npm run build --workspace=apps/delivery-app
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/apps/delivery-app ./apps/delivery-app
+EXPOSE 3003
+CMD ["npm", "run", "start", "--workspace=apps/delivery-app"]

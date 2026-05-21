@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: rootpassword
+      POSTGRES_DB: foody_db
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+    networks:
+      - foody_prod_network
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    networks:
+      - foody_prod_network
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    ports:
+      - '3001:3001'
+    environment:
+      - DATABASE_URL=postgresql://root:rootpassword@postgres:5432/foody_db?schema=public
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_SECRET=production-super-secret-key-change-me
+      - PORT=3001
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - foody_prod_network
+    restart: unless-stopped
+
+  customer-app:
+    build:
+      context: .
+      dockerfile: apps/customer-app/Dockerfile
+    ports:
+      - '3000:3000'
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:3001/api/v1
+    depends_on:
+      - backend
+    networks:
+      - foody_prod_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data_prod:
+
+networks:
+  foody_prod_network:
+    driver: bridge

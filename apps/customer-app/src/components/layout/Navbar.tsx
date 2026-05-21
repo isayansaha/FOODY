@@ -17,6 +17,9 @@ export default function Navbar() {
           <Link href="/restaurants" className="hidden md:block text-sm font-medium transition-colors hover:text-primary">
             Restaurants
           </Link>
+          <Link href="/orders/history" className="hidden md:block text-sm font-medium transition-colors hover:text-primary">
+            Orders
+          </Link>
           <Link href="/cart" className="relative flex items-center p-2">
             <ShoppingCart className="h-5 w-5" />
             {cartCount > 0 && (

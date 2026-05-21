@@ -3,50 +3,96 @@ version: '3.8'
 services:
   postgres:
     image: postgres:15-alpine
-    container_name: foody_postgres
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: rootpassword
       POSTGRES_DB: foody_db
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - foody_network
-    restart: unless-stopped
 
   redis:
     image: redis:7-alpine
-    container_name: foody_redis
     ports:
-      - '6379:6379'
-    volumes:
-      - redis_data:/data
+      - "6379:6379"
     networks:
       - foody_network
-    restart: unless-stopped
 
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
-    container_name: foody_elasticsearch
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
     environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - DATABASE_URL=postgresql://root:rootpassword@postgres:5432/foody_db?schema=public
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_SECRET=super-secret-local-key-for-jwt
+      - PORT=3001
     ports:
-      - '9200:9200'
-      - '9300:9300'
-    volumes:
-      - es_data:/usr/share/elasticsearch/data
+      - "3001:3001"
+    depends_on:
+      - postgres
+      - redis
     networks:
       - foody_network
-    restart: unless-stopped
+
+  customer-app:
+    build:
+      context: .
+      dockerfile: apps/customer-app/Dockerfile
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - foody_network
+
+  restaurant-app:
+    build:
+      context: .
+      dockerfile: apps/restaurant-app/Dockerfile
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1
+    ports:
+      - "3002:3002"
+    depends_on:
+      - backend
+    networks:
+      - foody_network
+
+  delivery-app:
+    build:
+      context: .
+      dockerfile: apps/delivery-app/Dockerfile
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1
+    ports:
+      - "3003:3003"
+    depends_on:
+      - backend
+    networks:
+      - foody_network
+
+  admin-app:
+    build:
+      context: .
+      dockerfile: apps/admin-app/Dockerfile
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1
+    ports:
+      - "3004:3004"
+    depends_on:
+      - backend
+    networks:
+      - foody_network
 
 volumes:
   postgres_data:
-  redis_data:
-  es_data:
 
 networks:
   foody_network:
