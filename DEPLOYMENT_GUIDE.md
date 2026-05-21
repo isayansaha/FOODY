@@ -32,7 +32,6 @@ Because most cloud providers now require credit cards for identity verification,
 3. Select your Foody GitHub repository.
 4. **Configuration:**
    - **Name**: `foody-backend`
-   - **Root Directory**: `apps/backend` (This is crucial, otherwise the deployment will fail!)
    - **Branch**: `main`
    - **Auto-Deploy**: Enabled
 5. **Environment Variables** (Add these before deploying):
