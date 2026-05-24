@@ -25,7 +25,7 @@ This guide covers how to deploy the entire Foody Platform (4 Frontends, 1 Backen
 
 ## 2. Deploy Backend (Back4App Containers - Free & No Card Required)
 
-Because most cloud providers now require credit cards for identity verification, we will use **Back4App Containers** which allows you to deploy Dockerized Node.js applications completely free without a card.
+Because most cloud providers now require credit cards or force paid add-ons, we will use **Back4App Containers** which allows you to deploy Dockerized Node.js applications completely free.
 
 1. Go to [Back4App Containers](https://www.back4app.com/containers) and sign up using your GitHub account.
 2. Click **New App**.
@@ -34,6 +34,7 @@ Because most cloud providers now require credit cards for identity verification,
    - **Name**: `foody-backend`
    - **Branch**: `main`
    - **Auto-Deploy**: Enabled
+   - *Note: Leave all directory/Dockerfile settings completely blank/default. Back4App will automatically find the Dockerfile at the root of the repository!*
 5. **Environment Variables** (Add these before deploying):
    - `DATABASE_URL` = (Paste Supabase URI)
    - `REDIS_HOST` = (Paste Upstash Endpoint)
@@ -41,7 +42,7 @@ Because most cloud providers now require credit cards for identity verification,
    - `JWT_SECRET` = (Any random secret string, e.g., `supersecretjwtkey123`)
 6. Click **Deploy**.
 
-*Back4App will automatically detect the `Dockerfile` inside `apps/backend` and build your NestJS application. Once deployed, copy the live URL (e.g., `https://foody-backend-xyz.b4a.run`). You will need this for the frontends.*
+*Once deployed and marked as "Healthy", copy the live URL (e.g., `https://foody-backend-xyz.b4a.run`). You will need this URL when deploying the frontends on Vercel.*
 
 ---
 
